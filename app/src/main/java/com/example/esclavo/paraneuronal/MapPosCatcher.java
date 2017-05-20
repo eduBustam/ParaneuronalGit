@@ -47,6 +47,7 @@ public class MapPosCatcher extends FragmentActivity implements OnMapReadyCallbac
 
         mMap = googleMap;
         //asdasdasdasdad
+        //al nachito le gusta el piquito
         // Add a marker in Sydney and move the camera
         LatLng sydney = new LatLng(-22.407744, -41.836491);
         float zoom= (float)(15.0);
