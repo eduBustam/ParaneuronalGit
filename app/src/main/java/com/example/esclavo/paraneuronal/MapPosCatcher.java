@@ -3,6 +3,7 @@ package com.example.esclavo.paraneuronal;
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
@@ -17,6 +18,11 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolygonOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
+
+import java.util.List;
 
 public class MapPosCatcher extends FragmentActivity implements OnMapReadyCallback {
 
@@ -46,12 +52,44 @@ public class MapPosCatcher extends FragmentActivity implements OnMapReadyCallbac
     public void onMapReady(GoogleMap googleMap) {
 
         mMap = googleMap;
-        //asdasdasdasdad
-        //al nachito le gusta el piquito
+        Polyline recorrido = mMap.addPolyline(new PolylineOptions()
+                .add(new LatLng(-22.406530, -41.842921),
+                        new LatLng(-22.406706, -41.837756),
+                        new LatLng(-22.404328, -41.828486),
+                        new LatLng(-22.406586, -41.823933),
+                        new LatLng(-22.405256, -41.818015),
+                        new LatLng(-22.408210, -41.810402),
+                        new LatLng(-22.402657, -41.795139),
+                        new LatLng(-22.398196, -41.790510),
+                        new LatLng(-22.392815, -41.778839),
+                        new LatLng(-22.384867, -41.775477),
+                        new LatLng(-22.371389, -41.778159),
+                        new LatLng(-22.369224, -41.775555),
+                        new LatLng(-22.353257, -41.768089),
+                        new LatLng(-22.328294, -41.729314),
+                        new LatLng(-22.314725, -41.720222))
+                .width(5)
+                .color(Color.GREEN));
+        recorrido.setClickable(true);
         // Add a marker in Sydney and move the camera
-        LatLng sydney = new LatLng(-22.407744, -41.836491);
+        LatLng inicio = new LatLng(-22.406530, -41.842921);
+        LatLng fin=new LatLng(-22.314725, -41.720222);
         float zoom= (float)(15.0);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(sydney,zoom));
+
+        mMap.setOnPolylineClickListener(new GoogleMap.OnPolylineClickListener(){
+           @Override
+            public void onPolylineClick (final Polyline recorrido){
+               mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+                   @Override
+                   public void onMapClick(LatLng latLng) {
+                       mMap.addMarker(new MarkerOptions().position(latLng).title("Me Bajo"));
+                   }
+               });
+           }
+
+        });
+        mMap.addMarker(new MarkerOptions().position(inicio).title("Inicio"));
+        mMap.addMarker(new MarkerOptions().position(fin).title("Fin"));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(inicio,zoom));
     }
 }
