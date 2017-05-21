@@ -52,6 +52,8 @@ public class MapPosCatcher extends FragmentActivity implements OnMapReadyCallbac
     public void onMapReady(GoogleMap googleMap) {
 
         mMap = googleMap;
+        //Para cuando ya tengamos los punstos reales designados del recorrido
+        //final Polyline recorrido=mMap.addPolyline(new PolylineOptions().add(List<LatLng> Puntos).width(5).color(Color.Blue);
         final Polyline recorrido = mMap.addPolyline(new PolylineOptions()
                 .add(new LatLng(-22.406530, -41.842921),
                         new LatLng(-22.406706, -41.837756),
@@ -77,14 +79,12 @@ public class MapPosCatcher extends FragmentActivity implements OnMapReadyCallbac
         float zoom= (float)(15.0);
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
-            public void onMapClick(LatLng clickCoords) {
-                for (LatLng polyCoords : recorrido.getPoints()) {
+            public void onMapClick(LatLng clickencito) {
+                for (LatLng recoCoords : recorrido.getPoints()) {
                     float[] results = new float[1];
-                    Location.distanceBetween(clickCoords.latitude, clickCoords.longitude,
-                                polyCoords.latitude, polyCoords.longitude, results);
-                    if (results[0] < 100) {
-                        // If distance is less than 100 meters, this is your polyline
-                        mMap.addMarker(new MarkerOptions().position(clickCoords).title("Me Bajo"));
+                    Location.distanceBetween(clickencito.latitude, clickencito.longitude, recoCoords.latitude, recoCoords.longitude, results);
+                    if (results[0]<50) {//Metros del punto
+                        mMap.addMarker(new MarkerOptions().position(clickencito).title("Me Bajo"));
 
                     }
                 }
