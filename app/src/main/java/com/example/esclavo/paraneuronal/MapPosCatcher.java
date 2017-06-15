@@ -10,6 +10,11 @@ import android.location.LocationManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -24,7 +29,7 @@ import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.util.List;
 
-public class MapPosCatcher extends FragmentActivity implements OnMapReadyCallback {
+public class MapPosCatcher extends AppCompatActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
 
@@ -32,12 +37,34 @@ public class MapPosCatcher extends FragmentActivity implements OnMapReadyCallbac
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map_pos_catcher);
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+        Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
+        setSupportActionBar(myToolbar);
+    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.toolbar, menu);
+        return super.onCreateOptionsMenu(menu);
     }
 
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_settings:
+                return true;
+
+            case R.id.action_favorite:
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(-22.406530, -41.842921),(float)(13.0)));
+                //mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(-22.406530, -41.842921),(float)(13.0)));
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+
+        }
+    }
 
     /**
      * Manipulates the map once available.
@@ -104,6 +131,6 @@ public class MapPosCatcher extends FragmentActivity implements OnMapReadyCallbac
         });*/
         mMap.addMarker(new MarkerOptions().position(inicio).title("Inicio"));
         mMap.addMarker(new MarkerOptions().position(fin).title("Fin"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(inicio,zoom));
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(inicio,zoom));
     }
 }
