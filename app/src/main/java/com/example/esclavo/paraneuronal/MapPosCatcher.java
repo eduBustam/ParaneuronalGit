@@ -20,8 +20,10 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolygonOptions;
 import com.google.android.gms.maps.model.Polyline;
@@ -32,6 +34,12 @@ import java.util.List;
 public class MapPosCatcher extends AppCompatActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
+    private Funciones func=new Funciones();
+    private Marker inicio;
+    private Marker fin;
+    private Marker subo;
+    private Marker bajo;
+    private Polyline recorrido;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +65,6 @@ public class MapPosCatcher extends AppCompatActivity implements OnMapReadyCallba
 
             case R.id.action_favorite:
                 mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(-22.406530, -41.842921),(float)(13.0)));
-                //mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(-22.406530, -41.842921),(float)(13.0)));
                 return true;
 
             default:
@@ -79,9 +86,21 @@ public class MapPosCatcher extends AppCompatActivity implements OnMapReadyCallba
     public void onMapReady(GoogleMap googleMap) {
 
         mMap = googleMap;
+        LatLng posInicio = new LatLng(-22.406530, -41.842921);
+        LatLng posFin=new LatLng(-22.314725, -41.720222);
+        inicio=mMap.addMarker(new MarkerOptions()
+                .position(posInicio)
+                .title("Inicio")
+                .icon(BitmapDescriptorFactory.defaultMarker((float)(60))));
+        fin=mMap.addMarker(new MarkerOptions()
+                .position(posFin)
+                .title("Fin")
+                .icon(BitmapDescriptorFactory.defaultMarker((float)(60))));
+
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(posInicio,(float)(15.0)));
         //Para cuando ya tengamos los punstos reales designados del recorrido
         //final Polyline recorrido=mMap.addPolyline(new PolylineOptions().add(List<LatLng> Puntos).width(5).color(Color.Blue);
-        final Polyline recorrido = mMap.addPolyline(new PolylineOptions()
+            recorrido = mMap.addPolyline(new PolylineOptions()
                 .add(new LatLng(-22.406530, -41.842921),
                         new LatLng(-22.406706, -41.837756),
                         new LatLng(-22.404328, -41.828486),
@@ -100,37 +119,60 @@ public class MapPosCatcher extends AppCompatActivity implements OnMapReadyCallba
                 .width(5)
                 .color(Color.GREEN));
         recorrido.setClickable(false);
-        // Add a marker in Sydney and move the camera
-        LatLng inicio = new LatLng(-22.406530, -41.842921);
-        LatLng fin=new LatLng(-22.314725, -41.720222);
-        float zoom= (float)(15.0);
+
+        //Me bajo
+        //Simple click para detectar la bajada
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
             public void onMapClick(LatLng clickencito) {
+                //MENOR
+                float min=(float) (999999999.9);
+                float[] results = new float[1];
+                //BUSCAR MENOR
                 for (LatLng recoCoords : recorrido.getPoints()) {
-                    float[] results = new float[1];
                     Location.distanceBetween(clickencito.latitude, clickencito.longitude, recoCoords.latitude, recoCoords.longitude, results);
-                    if (results[0]<50) {//Metros del punto
-                        mMap.addMarker(new MarkerOptions().position(clickencito).title("Me Bajo"));
-
+                    min=func.menor(min,results[0]);
+                }
+                //SE BUSCA LA POS IGUAL A MENOR
+                for (LatLng recoCoords : recorrido.getPoints()) {
+                    Location.distanceBetween(clickencito.latitude, clickencito.longitude, recoCoords.latitude, recoCoords.longitude, results);
+                    if (results[0]==min) {
+                        bajo.remove();
+                        bajo=mMap.addMarker(new MarkerOptions()
+                                .position(new LatLng(recoCoords.latitude,recoCoords.longitude))
+                                .title("Me Bajo"));
+                        break;
                     }
                 }
             }
         });
-        /*mMap.setOnPolylineClickListener(new GoogleMap.OnPolylineClickListener(){
-           @Override
-            public void onPolylineClick (final Polyline recorrido){
-               mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
-                   @Override
-                   public void onMapClick(LatLng latLng) {
-                       mMap.addMarker(new MarkerOptions().position(latLng).title("Me Bajo"));
-                   }
-               });
-           }
+        //Me subo
+        //Long click para detectar la subida
+        mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener(){
+            @Override
+            public void onMapLongClick(LatLng longClick){
+                //MENOR
+                float min=(float) (999999999.9);
+                float[] results = new float[1];
 
-        });*/
-        mMap.addMarker(new MarkerOptions().position(inicio).title("Inicio"));
-        mMap.addMarker(new MarkerOptions().position(fin).title("Fin"));
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(inicio,zoom));
+                //BUSCAR MENOR
+                for (LatLng recoCoords : recorrido.getPoints()) {
+                    Location.distanceBetween(longClick.latitude, longClick.longitude, recoCoords.latitude, recoCoords.longitude, results);
+                    min=func.menor(min,results[0]);
+                }
+                //SE BUSCA LA POS IGUAL A MENOR
+                for (LatLng recoCoords : recorrido.getPoints()) {
+                    Location.distanceBetween(longClick.latitude, longClick.longitude, recoCoords.latitude, recoCoords.longitude, results);
+                    if (results[0]==min) {
+                        subo.remove();
+                        subo=mMap.addMarker(new MarkerOptions()
+                                .icon(BitmapDescriptorFactory.defaultMarker((float)(150)))
+                                .position(new LatLng(recoCoords.latitude,recoCoords.longitude))
+                                .title("Me Subo"));
+                        break;
+                    }
+                }
+            }
+        });
     }
 }
