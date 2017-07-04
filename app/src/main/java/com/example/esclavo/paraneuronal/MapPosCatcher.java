@@ -185,6 +185,8 @@ public class MapPosCatcher extends AppCompatActivity implements OnMapReadyCallba
 
     RESPUESTA RESPUESTA;
 
+
+    //SE DEBE INYECTAR ESTAS VARIABLES A LA FUNCION, LUEGO PREGUNTARA A LA URL Y ENTREGARA UN OBJETO LLAMADO RESPUESTA
     public void GETRequest(float inicio_lat, float inicio_long, float final_lat, float final_long){
 
         String URL = "http://159.203.59.183/api/datosGPS?lat1="+inicio_lat+"?lon1="+inicio_long+"?lat2="+final_lat+"?lon2="+final_long;
