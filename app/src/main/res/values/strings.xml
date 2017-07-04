@@ -1,8 +1,10 @@
 <resources>
     <string name="app_name">Paraneuronal</string>
     <string name="title_activity_map_pos_catcher">Map</string>
-    <string name="action_settings">Nada</string>
-    <string name="action_rec1">Recorrido 1</string>
-    <string name="action_rec2">Recorrido 2</string>
     <string name="action_send">Enviar</string>
+    <string name="action_reco1">Recorrido 1</string>
+    <string name="action_reco2">Recorrido 2</string>
+    <string name="action_info">Información</string>
+    <string name="action_favorite">Fav</string>
+    <string name="action_settings">Settings</string>
 </resources>

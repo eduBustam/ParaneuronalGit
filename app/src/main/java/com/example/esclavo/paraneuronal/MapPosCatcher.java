@@ -15,6 +15,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
@@ -42,8 +43,11 @@ public class MapPosCatcher extends AppCompatActivity implements OnMapReadyCallba
     private Marker inicio;
     private Marker fin;
     private Marker subo;
+    private int suboCont=0;
     private Marker bajo;
-    private Polyline recorrido;
+    private int bajoCont=0;
+    private Polyline camino;
+    private int recorrido;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,8 +67,31 @@ public class MapPosCatcher extends AppCompatActivity implements OnMapReadyCallba
     }
 
     public boolean onOptionsItemSelected(MenuItem item) {
+        Context context = getApplicationContext();
         switch (item.getItemId()) {
             case R.id.action_send:
+                //TODO:Aca estan los datos listos para ser mandados, subo es el punto de inicio, bajo es el punto de fin
+                if(suboCont==1 && bajoCont==1 &&(recorrido==1 || recorrido==2)){
+                    float latSubo= (float) subo.getPosition().latitude;
+                    float lngSubo= (float) subo.getPosition().longitude;
+                    float latBajo= (float) bajo.getPosition().latitude;
+                    float lngBajo= (float) bajo.getPosition().longitude;
+                    //recorrido
+                    GETRequest(latSubo, lngSubo,latBajo, lngBajo);
+                    Toast.makeText(context,"Enviado", Toast.LENGTH_SHORT).show();
+                }
+                else{
+                    Toast.makeText(context,"Marque recorrido y seleccione puntos", Toast.LENGTH_SHORT).show();
+                }
+                return true;
+            case R.id.action_reco1:
+                recorrido=1;
+                Toast.makeText(context, "Recorrido 1", Toast.LENGTH_SHORT).show();
+                return true;
+            case R.id.action_reco2:
+                recorrido=2;
+                Toast.makeText(context, "Recorrido 2", Toast.LENGTH_SHORT).show();
+            case R.id.action_extra:
                 return true;
 
             case R.id.action_rec1:
@@ -106,7 +133,7 @@ public class MapPosCatcher extends AppCompatActivity implements OnMapReadyCallba
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(posInicio,(float)(15.0)));
         //Para cuando ya tengamos los punstos reales designados del recorrido
         //final Polyline recorrido=mMap.addPolyline(new PolylineOptions().add(List<LatLng> Puntos).width(5).color(Color.Blue);
-            recorrido = mMap.addPolyline(new PolylineOptions()
+            camino = mMap.addPolyline(new PolylineOptions()
                 .add(new LatLng(-22.406530, -41.842921),
                         new LatLng(-22.406706, -41.837756),
                         new LatLng(-22.404328, -41.828486),
@@ -124,7 +151,7 @@ public class MapPosCatcher extends AppCompatActivity implements OnMapReadyCallba
                         new LatLng(-22.314725, -41.720222))
                 .width(5)
                 .color(Color.GREEN));
-        recorrido.setClickable(false);
+        camino.setClickable(false);
 
         //Me bajo
         //Simple click para detectar la bajada
@@ -135,19 +162,21 @@ public class MapPosCatcher extends AppCompatActivity implements OnMapReadyCallba
                 float min=(float) (999999999.9);
                 float[] results = new float[1];
                 //BUSCAR MENOR
-                for (LatLng recoCoords : recorrido.getPoints()) {
+                for (LatLng recoCoords : camino.getPoints()) {
                     Location.distanceBetween(clickencito.latitude, clickencito.longitude, recoCoords.latitude, recoCoords.longitude, results);
                     min=func.menor(min,results[0]);
                 }
                 //SE BUSCA LA POS IGUAL A MENOR
-                for (LatLng recoCoords : recorrido.getPoints()) {
+                for (LatLng recoCoords : camino.getPoints()) {
                     Location.distanceBetween(clickencito.latitude, clickencito.longitude, recoCoords.latitude, recoCoords.longitude, results);
-                    if (results[0]==min) {
-                        bajo.remove();
+                    if (results[0]==min && results[0]<100) {
+                        if(bajoCont==1)
+                            bajo.remove();
+
                         bajo=mMap.addMarker(new MarkerOptions()
                                 .position(new LatLng(recoCoords.latitude,recoCoords.longitude))
                                 .title("Me Bajo"));
-                        break;
+                        bajoCont=1;
                     }
                 }
             }
@@ -162,20 +191,21 @@ public class MapPosCatcher extends AppCompatActivity implements OnMapReadyCallba
                 float[] results = new float[1];
 
                 //BUSCAR MENOR
-                for (LatLng recoCoords : recorrido.getPoints()) {
+                for (LatLng recoCoords : camino.getPoints()) {
                     Location.distanceBetween(longClick.latitude, longClick.longitude, recoCoords.latitude, recoCoords.longitude, results);
                     min=func.menor(min,results[0]);
                 }
                 //SE BUSCA LA POS IGUAL A MENOR
-                for (LatLng recoCoords : recorrido.getPoints()) {
+                for (LatLng recoCoords : camino.getPoints()) {
                     Location.distanceBetween(longClick.latitude, longClick.longitude, recoCoords.latitude, recoCoords.longitude, results);
-                    if (results[0]==min) {
-                        subo.remove();
+                    if (results[0]==min&& results[0]<100) {
+                        if(suboCont==1)
+                            subo.remove();
                         subo=mMap.addMarker(new MarkerOptions()
                                 .icon(BitmapDescriptorFactory.defaultMarker((float)(150)))
                                 .position(new LatLng(recoCoords.latitude,recoCoords.longitude))
                                 .title("Me Subo"));
-                        break;
+                        suboCont=1;
                     }
                 }
             }
