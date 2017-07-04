@@ -16,6 +16,10 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -174,5 +178,39 @@ public class MapPosCatcher extends AppCompatActivity implements OnMapReadyCallba
                 }
             }
         });
+    }
+
+
+
+
+    RESPUESTA RESPUESTA;
+
+    public void GETRequest(float inicio_lat, float inicio_long, float final_lat, float final_long){
+
+        String URL = "http://159.203.59.183/api/datosGPS?lat1="+inicio_lat+"?lon1="+inicio_long+"?lat2="+final_lat+"?lon2="+final_long;
+
+
+
+        GsonRequest gsonRequest = new GsonRequest(Request.Method.GET, URL, RESPUESTA.class, null,
+                new Response.Listener<RESPUESTA>() {
+                    @Override
+                    public void onResponse(RESPUESTA response) {
+                        RESPUESTA = response;
+
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError volleyError) {
+
+                //ERROR EN EL LLAMADO
+            }
+        });
+        gsonRequest.setRetryPolicy(new DefaultRetryPolicy(
+                10000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+
+        // Add the request to the queue
+        VolleySingleton.getInstance(this).addToRequestQueue(gsonRequest);
     }
 }

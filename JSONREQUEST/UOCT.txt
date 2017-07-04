@@ -1,0 +1,16 @@
+
+public class UOCT {
+
+    public UOCT(){}
+
+    public UOCT(Eventos eventos){
+    }
+
+    @SerializedName("eventos")
+    public List<Eventos> eventos;
+
+    @Override
+    public String toString() {
+        return " "+eventos.toString()+" " ;
+    }
+}
