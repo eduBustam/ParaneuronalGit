@@ -64,13 +64,15 @@ public class MapPosCatcher extends AppCompatActivity implements OnMapReadyCallba
 
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_settings:
+            case R.id.action_send:
                 return true;
 
-            case R.id.action_favorite:
+            case R.id.action_rec1:
                 mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(-22.406530, -41.842921),(float)(13.0)));
                 return true;
-
+            case R.id.action_rec2:
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(-22.406530, -41.842921),(float)(13.0)));
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
 

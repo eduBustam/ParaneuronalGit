@@ -4,9 +4,19 @@
 
     <!-- "Mark Favorite", should appear as action button if possible -->
     <item
-        android:id="@+id/action_favorite"
-        android:icon="@drawable/ic_action_name"
-        android:title="@string/action_favorite"
+        android:id="@+id/action_rec1"
+        android:icon="@mipmap/ic_recorrido1"
+        android:title="@string/action_rec1"
+        app:showAsAction="ifRoom"/>
+    <item
+        android:id="@+id/action_rec2"
+        android:icon="@mipmap/ic_recorrido2"
+        android:title="@string/action_rec2"
+        app:showAsAction="ifRoom"/>
+    <item
+        android:id="@+id/action_send"
+        android:icon="@mipmap/ic_send"
+        android:title="@string/action_send"
         app:showAsAction="ifRoom"/>
 
     <!-- Settings, should always be in the overflow -->
