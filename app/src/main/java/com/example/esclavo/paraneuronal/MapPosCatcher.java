@@ -69,9 +69,6 @@ public class MapPosCatcher extends AppCompatActivity implements OnMapReadyCallba
     public boolean onOptionsItemSelected(MenuItem item) {
         Context context = getApplicationContext();
         switch (item.getItemId()) {
-            case R.id.action_info:
-                return true;
-
             case R.id.action_send:
                 //TODO:Aca estan los datos listos para ser mandados, subo es el punto de inicio, bajo es el punto de fin
                 if(suboCont==1 && bajoCont==1 &&(recorrido==1 || recorrido==2)){
@@ -90,6 +87,7 @@ public class MapPosCatcher extends AppCompatActivity implements OnMapReadyCallba
             case R.id.action_reco2:
                 recorrido=2;
                 Toast.makeText(context, "Recorrido 2", Toast.LENGTH_SHORT).show();
+            case R.id.action_extra:
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
