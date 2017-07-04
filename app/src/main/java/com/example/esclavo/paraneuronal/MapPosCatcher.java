@@ -72,12 +72,16 @@ public class MapPosCatcher extends AppCompatActivity implements OnMapReadyCallba
             case R.id.action_send:
                 //TODO:Aca estan los datos listos para ser mandados, subo es el punto de inicio, bajo es el punto de fin
                 if(suboCont==1 && bajoCont==1 &&(recorrido==1 || recorrido==2)){
-                    double latSubo=subo.getPosition().latitude;
-                    double lngSubo=subo.getPosition().longitude;
-                    double latBajo=bajo.getPosition().latitude;
-                    double lngBBajo=bajo.getPosition().longitude;
+                    float latSubo= (float) subo.getPosition().latitude;
+                    float lngSubo= (float) subo.getPosition().longitude;
+                    float latBajo= (float) bajo.getPosition().latitude;
+                    float lngBajo= (float) bajo.getPosition().longitude;
                     //recorrido
+                    GETRequest(latSubo, lngSubo,latBajo, lngBajo);
                     Toast.makeText(context,"Enviado", Toast.LENGTH_SHORT).show();
+                }
+                else{
+                    Toast.makeText(context,"Marque recorrido y seleccione puntos", Toast.LENGTH_SHORT).show();
                 }
                 return true;
             case R.id.action_reco1:
