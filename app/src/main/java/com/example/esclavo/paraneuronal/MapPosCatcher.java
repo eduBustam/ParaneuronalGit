@@ -93,6 +93,13 @@ public class MapPosCatcher extends AppCompatActivity implements OnMapReadyCallba
                 Toast.makeText(context, "Recorrido 2", Toast.LENGTH_SHORT).show();
             case R.id.action_extra:
                 return true;
+
+            case R.id.action_rec1:
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(-22.406530, -41.842921),(float)(13.0)));
+                return true;
+            case R.id.action_rec2:
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(-22.406530, -41.842921),(float)(13.0)));
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
 

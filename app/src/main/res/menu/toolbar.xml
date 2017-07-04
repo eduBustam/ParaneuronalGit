@@ -18,7 +18,6 @@
         android:icon="@drawable/ic_recorrido2"
         android:title="@string/action_reco2"
         app:showAsAction="always"/>
-
     <!-- Settings, should always be in the overflow -->
     <item android:id="@+id/action_extra"
         android:title="@string/action_info"
